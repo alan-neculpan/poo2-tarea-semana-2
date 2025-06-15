@@ -1,9 +1,12 @@
 package main;
 
+import javax.swing.JOptionPane;
+
 public class Calculadora extends javax.swing.JFrame {
 
     public Calculadora() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -22,6 +25,7 @@ public class Calculadora extends javax.swing.JFrame {
         txtBase = new javax.swing.JTextField();
         txtAltura = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
+        resultadoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -42,6 +46,8 @@ public class Calculadora extends javax.swing.JFrame {
             }
         });
 
+        resultadoLabel.setText("Resultado:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -49,20 +55,23 @@ public class Calculadora extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(72, 72, 72)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtBase, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtAltura, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(46, 46, 46)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addComponent(btnCalcular, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(resultadoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(72, 72, 72)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtBase, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtAltura, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -80,7 +89,9 @@ public class Calculadora extends javax.swing.JFrame {
                     .addComponent(txtAltura, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addComponent(btnCalcular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(resultadoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -98,7 +109,51 @@ public class Calculadora extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
-        
+
+        try {
+            String base = txtBase.getText();
+            String altura = txtAltura.getText();
+
+            if (base.isEmpty() || altura.isEmpty()) {
+                throw new IllegalArgumentException("Por favor, ingrese valores para la Base y la Altura.");
+            }
+
+            double dbase = Double.parseDouble(base);
+            double daltura = Double.parseDouble(altura);
+
+            if (dbase <= 0 || daltura <= 0) {
+                throw new IllegalArgumentException("La base y la altura deben ser mayor a Cero");
+            }
+
+            double area = (dbase * daltura) / 2;
+
+            // Mostrar el resultado en la etiqueta
+            resultadoLabel.setText("Resultado: Área = " + String.format("%.2f", area));
+
+        } catch (NumberFormatException ex) {
+            // Manejo de excepción si la entrada no es un número válido
+            resultadoLabel.setText("Error: Ingrese solo números válidos para la base y la altura.");
+            JOptionPane.showMessageDialog(this,
+                    "Error de formato. Asegúrese de ingresar solo números.",
+                    "Error de Entrada",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException ex) {
+            // Manejo de excepción para argumentos inválidos (vacío o negativo)
+            // Mensaje específico basado en la validación
+            resultadoLabel.setText("Error: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Error de Validación",
+                    JOptionPane.WARNING_MESSAGE);
+        } catch (Throwable t) {
+            // Captura cualquier otra excepción inesperada (Throwable es la clase base)
+            // Esto asegura que el programa no se detenga por errores no previstos
+            resultadoLabel.setText("Error inesperado: " + t.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error inesperado: " + t.getMessage(),
+                    "Error General",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     /**
@@ -140,6 +195,7 @@ public class Calculadora extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel resultadoLabel;
     private javax.swing.JTextField txtAltura;
     private javax.swing.JTextField txtBase;
     // End of variables declaration//GEN-END:variables
